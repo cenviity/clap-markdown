@@ -101,24 +101,17 @@ pub fn help_markdown<C: clap::CommandFactory>(
     options: Option<MarkdownOptions>,
 ) -> String {
     let command = C::command();
-    let options = options.unwrap_or_default();
-    help_markdown_command_custom(&command, &options)
-}
-
-/// Format the help information for `command` as Markdown.
-pub fn help_markdown_command(command: &clap::Command) -> String {
-    help_markdown_command_custom(command, &MarkdownOptions::default())
+    help_markdown_command(&command, options)
 }
 
 /// Format the help information for `command` as Markdown, with custom options.
-pub fn help_markdown_command_custom(
+pub fn help_markdown_command(
     command: &clap::Command,
-    options: &MarkdownOptions,
+    options: Option<MarkdownOptions>,
 ) -> String {
     let mut buffer = String::with_capacity(100);
-
-    write_help_markdown(&mut buffer, command, options);
-
+    let options = options.unwrap_or_default();
+    write_help_markdown(&mut buffer, command, &options);
     buffer
 }
 
