@@ -485,21 +485,21 @@ fn write_arg_markdown(
     match (arg.get_short(), arg.get_long()) {
         (Some(short), Some(long)) => {
             if arg.get_action().takes_values() {
-                write!(buffer, "`-{short}`, `--{long} <{value_name}>`")?
+                write!(buffer, "`-{short}`, `--{long}` `<{value_name}>`")?
             } else {
                 write!(buffer, "`-{short}`, `--{long}`")?
             }
         },
         (Some(short), None) => {
             if arg.get_action().takes_values() {
-                write!(buffer, "`-{short} <{value_name}>`")?
+                write!(buffer, "`-{short}` `<{value_name}>`")?
             } else {
                 write!(buffer, "`-{short}`")?
             }
         },
         (None, Some(long)) => {
             if arg.get_action().takes_values() {
-                write!(buffer, "`--{long} <{value_name}>`")?
+                write!(buffer, "`--{long}` `<{value_name}>`")?
             } else {
                 write!(buffer, "`--{long}`")?
             }
