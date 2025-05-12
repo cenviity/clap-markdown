@@ -52,7 +52,7 @@ Options:
         help_markdown_command_custom(
             &app,
             &MarkdownOptions::new().show_footer(false)
-        ),
+        ).unwrap(),
         "\
 # Command-Line Help for `my-program-display-name`
 
@@ -127,7 +127,7 @@ Options:
         help_markdown_command_custom(
             &app,
             &MarkdownOptions::new().show_footer(false)
-        ),
+        ).unwrap(),
         "\
 # Command-Line Help for `my-program-display-name`
 

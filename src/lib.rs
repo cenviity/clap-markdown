@@ -97,7 +97,7 @@ impl Default for MarkdownOptions {
 //======================================
 
 /// Format the help information for `command` as Markdown.
-pub fn help_markdown<C: clap::CommandFactory>() -> String {
+pub fn help_markdown<C: clap::CommandFactory>() -> anyhow::Result<String> {
     let command = C::command();
     help_markdown_command(&command)
 }
@@ -105,13 +105,15 @@ pub fn help_markdown<C: clap::CommandFactory>() -> String {
 /// Format the help information for `command` as Markdown, with custom options.
 pub fn help_markdown_custom<C: clap::CommandFactory>(
     options: &MarkdownOptions,
-) -> String {
+) -> anyhow::Result<String> {
     let command = C::command();
     help_markdown_command_custom(&command, options)
 }
 
 /// Format the help information for `command` as Markdown.
-pub fn help_markdown_command(command: &clap::Command) -> String {
+pub fn help_markdown_command(
+    command: &clap::Command,
+) -> anyhow::Result<String> {
     help_markdown_command_custom(command, &MarkdownOptions::default())
 }
 
@@ -119,12 +121,12 @@ pub fn help_markdown_command(command: &clap::Command) -> String {
 pub fn help_markdown_command_custom(
     command: &clap::Command,
     options: &MarkdownOptions,
-) -> String {
+) -> anyhow::Result<String> {
     let mut buffer = String::with_capacity(100);
 
-    write_help_markdown(&mut buffer, command, options);
+    write_help_markdown(&mut buffer, command, options)?;
 
-    buffer
+    Ok(buffer)
 }
 
 //======================================
@@ -134,21 +136,23 @@ pub fn help_markdown_command_custom(
 /// Format the help information for `command` as Markdown and print it.
 ///
 /// Output is printed to the standard output, using [`println!`].
-pub fn print_help_markdown<C: clap::CommandFactory>() {
+pub fn print_help_markdown<C: clap::CommandFactory>() -> anyhow::Result<()> {
     let command = C::command();
 
     let mut buffer = String::with_capacity(100);
 
-    write_help_markdown(&mut buffer, &command, &MarkdownOptions::default());
+    write_help_markdown(&mut buffer, &command, &MarkdownOptions::default())?;
 
     println!("{buffer}");
+
+    Ok(())
 }
 
 fn write_help_markdown(
     buffer: &mut String,
     command: &clap::Command,
     options: &MarkdownOptions,
-) {
+) -> anyhow::Result<()> {
     //----------------------------------
     // Write the document title
     //----------------------------------
@@ -159,12 +163,12 @@ fn write_help_markdown(
         Some(ref title) => title.to_owned(),
         None => format!("Command-Line Help for `{title_name}`"),
     };
-    writeln!(buffer, "# {title}\n",).unwrap();
+    writeln!(buffer, "# {title}\n",)?;
 
     writeln!(
         buffer,
         "This document contains the help content for the `{title_name}` command-line program.\n"
-    ).unwrap();
+    )?;
 
     //----------------------------------
     // Write the table of contents
@@ -175,31 +179,36 @@ fn write_help_markdown(
     // writeln!(buffer, "</ul></div>").unwrap();
 
     if options.show_table_of_contents {
-        writeln!(buffer, "**Command Overview:**\n").unwrap();
+        writeln!(buffer, "**Command Overview:**\n")?;
 
-        build_table_of_contents_markdown(buffer, &[], command, 0).unwrap();
+        build_table_of_contents_markdown(buffer, &[], command, 0)?;
 
-        writeln!(buffer).unwrap();
+        writeln!(buffer)?;
     }
 
     //----------------------------------------
     // Write the commands/subcommands sections
     //----------------------------------------
 
-    build_command_markdown(buffer, &[], command, 0, options).unwrap();
+    build_command_markdown(buffer, &[], command, 0, options)?;
 
     //-----------------
     // Write the footer
     //-----------------
     if options.show_footer {
-        write!(buffer, r#"<hr/>
+        write!(
+            buffer,
+            r#"<hr/>
 
 <small><i>
     This document was generated automatically by
     <a href="https://crates.io/crates/clap-markdown"><code>clap-markdown</code></a>.
 </i></small>
-"#).unwrap();
+"#
+        )?;
     }
+
+    Ok(())
 }
 
 fn build_table_of_contents_markdown(

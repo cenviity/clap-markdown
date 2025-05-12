@@ -10,7 +10,7 @@ fn test_example_complex_app() {
     }
 
     assert_eq!(
-        clap_markdown::help_markdown::<complex_app::Cli>(),
+        clap_markdown::help_markdown::<complex_app::Cli>().unwrap(),
         include_str!("../docs/examples/complex-app.md")
     );
 
@@ -21,7 +21,8 @@ fn test_example_complex_app() {
                 .show_footer(false)
                 .show_table_of_contents(false)
                 .show_aliases(false)
-        ),
+        )
+        .unwrap(),
         include_str!("../docs/examples/complex-app-custom.md"),
         "Mismatch testing CUSTOM Markdown output"
     );
