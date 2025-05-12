@@ -99,31 +99,25 @@ impl Default for MarkdownOptions {
 /// Format the help information for `command` as Markdown.
 pub fn help_markdown<C: clap::CommandFactory>() -> String {
     let command = C::command();
-    help_markdown_command(&command)
+    help_markdown_command(&command, None)
 }
 
 /// Format the help information for `command` as Markdown, with custom options.
 pub fn help_markdown_custom<C: clap::CommandFactory>(
-    options: &MarkdownOptions,
+    options: MarkdownOptions,
 ) -> String {
     let command = C::command();
-    help_markdown_command_custom(&command, options)
-}
-
-/// Format the help information for `command` as Markdown.
-pub fn help_markdown_command(command: &clap::Command) -> String {
-    help_markdown_command_custom(command, &MarkdownOptions::default())
+    help_markdown_command(&command, Some(options))
 }
 
 /// Format the help information for `command` as Markdown, with custom options.
-pub fn help_markdown_command_custom(
+pub fn help_markdown_command(
     command: &clap::Command,
-    options: &MarkdownOptions,
+    options: Option<MarkdownOptions>,
 ) -> String {
     let mut buffer = String::with_capacity(100);
-
-    write_help_markdown(&mut buffer, command, options);
-
+    let options = options.unwrap_or_default();
+    write_help_markdown(&mut buffer, command, &options);
     buffer
 }
 

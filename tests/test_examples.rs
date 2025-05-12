@@ -16,7 +16,7 @@ fn test_example_complex_app() {
 
     assert_eq!(
         clap_markdown::help_markdown_custom::<complex_app::Cli>(
-            &MarkdownOptions::new()
+            MarkdownOptions::new()
                 .title("Some Custom Title for Complex App")
                 .show_footer(false)
                 .show_table_of_contents(false)

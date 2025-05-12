@@ -1,5 +1,5 @@
 use clap::{Arg, Command};
-use clap_markdown::{help_markdown_command_custom, MarkdownOptions};
+use clap_markdown::{help_markdown_command, MarkdownOptions};
 
 use pretty_assertions::assert_eq;
 
@@ -49,9 +49,9 @@ Options:
     //-------------------------------------------------------
 
     assert_eq!(
-        help_markdown_command_custom(
+        help_markdown_command(
             &app,
-            &MarkdownOptions::new().show_footer(false)
+            Some(MarkdownOptions::new().show_footer(false))
         ),
         "\
 # Command-Line Help for `my-program-display-name`
@@ -124,9 +124,9 @@ Options:
     //-------------------------------------------------------
 
     assert_eq!(
-        help_markdown_command_custom(
+        help_markdown_command(
             &app,
-            &MarkdownOptions::new().show_footer(false)
+            Some(MarkdownOptions::new().show_footer(false))
         ),
         "\
 # Command-Line Help for `my-program-display-name`
