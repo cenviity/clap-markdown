@@ -13,6 +13,7 @@ categories = ["command-line-interface", "command-line-utilities", "development-t
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.98"
 clap = "4.*.*"
 
 [dev-dependencies]
