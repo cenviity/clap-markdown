@@ -96,6 +96,40 @@ impl Default for MarkdownOptions {
 // Public API functions
 //======================================
 
+#[must_use]
+pub struct HelpMarkdown {
+    contents: String,
+    command: clap::Command,
+    options: MarkdownOptions,
+}
+
+impl HelpMarkdown {
+    pub fn new() -> Self {
+        Self {
+            contents: String::with_capacity(100),
+            command: clap::Command::new(""),
+            options: MarkdownOptions::default(),
+        }
+    }
+
+    #[must_use]
+    pub fn build(mut self) -> String {
+        write_help_markdown(&mut self.contents, &self.command, &self.options);
+        self.contents
+    }
+
+    pub fn options(mut self, options: MarkdownOptions) -> Self {
+        self.options = options;
+        self
+    }
+}
+
+impl Default for HelpMarkdown {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Format the help information for `command` as Markdown.
 pub fn help_markdown<C: clap::CommandFactory>() -> String {
     let command = C::command();
@@ -124,7 +158,9 @@ pub fn help_markdown_command_custom(
 
     write_help_markdown(&mut buffer, command, options);
 
-    buffer
+    buffer;
+
+    HelpMarkdown::new().options(options).build()
 }
 
 //======================================
