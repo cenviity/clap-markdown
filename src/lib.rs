@@ -6,6 +6,8 @@
 //! [Examples]: https://github.com/ConnorGray/clap-markdown#Examples
 //!
 
+#![warn(clippy::pedantic)]
+
 // Ensure that doc tests in the README.md file get run.
 #[doc(hidden)]
 mod test_readme {
