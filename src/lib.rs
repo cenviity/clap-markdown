@@ -96,18 +96,13 @@ impl Default for MarkdownOptions {
 // Public API functions
 //======================================
 
-/// Format the help information for `command` as Markdown.
-pub fn help_markdown<C: clap::CommandFactory>() -> String {
-    let command = C::command();
-    help_markdown_command(&command)
-}
-
 /// Format the help information for `command` as Markdown, with custom options.
-pub fn help_markdown_custom<C: clap::CommandFactory>(
-    options: &MarkdownOptions,
+pub fn help_markdown<C: clap::CommandFactory>(
+    options: Option<MarkdownOptions>,
 ) -> String {
     let command = C::command();
-    help_markdown_command_custom(&command, options)
+    let options = options.unwrap_or_default();
+    help_markdown_command_custom(&command, &options)
 }
 
 /// Format the help information for `command` as Markdown.
