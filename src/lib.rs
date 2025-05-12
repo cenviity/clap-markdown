@@ -48,7 +48,7 @@ impl MarkdownOptions {
 
     /// Set a custom title to use in the generated document.
     ///
-    /// ```compile_fail
+    /// ```
     /// # use clap_markdown::MarkdownOptions;
     /// let s: &str = "Foo";
     /// let md = MarkdownOptions::new().title(s);
@@ -59,8 +59,8 @@ impl MarkdownOptions {
     /// let s: String = "Foo".to_owned();
     /// let md = MarkdownOptions::new().title(s);
     /// ```
-    pub fn title(mut self, title: String) -> Self {
-        self.title = Some(title);
+    pub fn title<T: Into<String>>(mut self, title: T) -> Self {
+        self.title = Some(title.into());
         self
     }
 
