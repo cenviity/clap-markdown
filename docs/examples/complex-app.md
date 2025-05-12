@@ -27,8 +27,8 @@ An example command-line tool
 
 ###### **Options:**
 
-* `-c`, `--config <FILE>` [alias: `--configuration`] — Sets a custom config file
-* `--target <TARGET>`
+* `-c`, `--config` `<FILE>` [alias: `--configuration`] — Sets a custom config file
+* `--target` `<TARGET>`
 
   Default value: `local`
 

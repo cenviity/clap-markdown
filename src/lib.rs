@@ -18,7 +18,7 @@ mod utils;
 
 use std::fmt::Write;
 
-use clap::builder::PossibleValue;
+use clap::{builder::PossibleValue, ArgAction};
 
 use utils::pluralize;
 
@@ -475,39 +475,36 @@ fn write_arg_markdown(
 
     let value_name: String = match arg.get_value_names() {
         // TODO: What if multiple names are provided?
-        Some([name, ..]) => name.as_str().to_owned(),
+        Some([name, ..]) => {
+            let name = name.as_str().to_owned();
+            if !arg.is_positional() && arg.get_action().takes_values() {
+                format!(" `<{name}>`")
+            } else {
+                name
+            }
+        },
         Some([]) => unreachable!(
             "clap Arg::get_value_names() returned Some(..) of empty list"
         ),
         None => arg.get_id().to_string().to_ascii_uppercase(),
     };
 
+    // let value_name = if !arg.is_positional() && arg.get_action().takes_values()
+    // {
+    //     format!(" `<{value_name}>`")
+    // } else {
+    //     value_name
+    // };
+
     match (arg.get_short(), arg.get_long()) {
         (Some(short), Some(long)) => {
-            if arg.get_action().takes_values() {
-                write!(buffer, "`-{short}`, `--{long}` `<{value_name}>`")?
-            } else {
-                write!(buffer, "`-{short}`, `--{long}`")?
-            }
+            write!(buffer, "`-{short}`, `--{long}`{value_name}")?;
         },
-        (Some(short), None) => {
-            if arg.get_action().takes_values() {
-                write!(buffer, "`-{short}` `<{value_name}>`")?
-            } else {
-                write!(buffer, "`-{short}`")?
-            }
-        },
-        (None, Some(long)) => {
-            if arg.get_action().takes_values() {
-                write!(buffer, "`--{long}` `<{value_name}>`")?
-            } else {
-                write!(buffer, "`--{long}`")?
-            }
-        },
+        (Some(short), None) => write!(buffer, "`-{short}`{value_name}")?,
+        (None, Some(long)) => write!(buffer, "`--{long}`{value_name}")?,
         (None, None) => {
             debug_assert!(arg.is_positional(), "unexpected non-positional Arg with neither short nor long name: {arg:?}");
-
-            write!(buffer, "`<{value_name}>`",)?;
+            write!(buffer, "{value_name}")?;
         },
     }
 
